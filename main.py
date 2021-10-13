@@ -17,9 +17,13 @@ app = Flask(__name__)
 def homepage():
     return render_template('index.html')
 
-@app.route('/about', methods=['GET'])
-def aboutpage():
-    return render_template('about.html')
+@app.route('/tweepy', methods=['GET'])
+def tweepypage():
+    return render_template('tweepy.html')
+
+@app.route('/vader', methods=['GET'])
+def vaderpage():
+    return render_template('vader.html')
 
 @app.route('/tweets', methods=['POST'])
 def tweetspage():  # put application's code here
