@@ -17,9 +17,9 @@ app = Flask(__name__)
 def homepage():
     return render_template('index.html')
 
-@app.route('/tweepy', methods=['GET'])
-def tweepypage():
-    return render_template('tweepy.html')
+@app.route('/textblob', methods=['GET'])
+def textblobpage():
+    return render_template('textblob.html')
 
 @app.route('/vader', methods=['GET'])
 def vaderpage():
