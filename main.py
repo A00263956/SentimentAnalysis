@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request
-
 import tweepy as tp
+#from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+#from textblob import TextBlob
+
 
 
 from twitter_auth import *
@@ -17,12 +19,26 @@ app = Flask(__name__)
 def homepage():
     return render_template('index.html')
 
+
 @app.route('/textblob', methods=['GET'])
 def textblobpage():
     return render_template('textblob.html')
 
+
 @app.route('/vader', methods=['GET'])
 def vaderpage():
+    #     text = 'oneplus'
+
+    # analyser = SentimentIntensityAnalyzer()
+    # blob = TextBlob(text)
+
+    # print('Textblob output', blob.sentiment.polarity)
+
+    # def sentiment_analyser_score(data):
+    #     score = analyser.polarity_scores(data)
+    #     print("{:-<40} {}".format(data, str(score)))
+
+    # sentiment_analyser_score(text)
     return render_template('vader.html')
 
 @app.route('/tweets', methods=['POST'])
