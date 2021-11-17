@@ -1,8 +1,53 @@
 {% extends 'partials/layout.html' %}
-
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+<style src="{{ url_for('static', filename='style.css') }}"></style>
 {% block content %}
     <h1>Static TextBlob Analysis</h1>
     <br>
     <h2>This is where we will display tweets:</h2>
     <h4>*tweet*</h4>
+<figure class="highcharts-figure">
+    <h1>{{ title }}</h1>
+
+    <div id="container"></div>
+</figure>
+<script>
+    Highcharts.chart('container', {
+    chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie'
+    },
+    title: {
+        text: '{{ description_text }}'
+    },
+    tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+    },
+    accessibility: {
+        point: {
+            valueSuffix: '%'
+        }
+    },
+    plotOptions: {
+        pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+                enabled: true,
+                format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+            }
+        }
+    },
+    series: [{
+        name: '{{ chart_name }}',
+        colorByPoint: true,
+        data: {{ list_of_data | safe }}
+    }]
+});
+</script>
 {% endblock %}

@@ -1,9 +1,7 @@
 from flask import Flask, render_template, request
+from textblob_functions import get_clean_tweets
+from vader_functions import get_polarity
 import tweepy as tp
-#from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-#from textblob import TextBlob
-
-
 
 from twitter_auth import *
 
@@ -22,7 +20,23 @@ def homepage():
 
 @app.route('/textblob', methods=['GET'])
 def textblobpage():
-    return render_template('textblob.html')
+    title = 'Data Vis Project 2021'
+    desc = 'A chart to viualise sentiment'
+    df = get_clean_tweets('bitcoin')
+
+    pos, neg, nue = get_polarity(df)
+
+    labels = ['positive', 'negative', 'neutral']
+    values = [pos, neg, nue]
+
+    data = zip(labels, values)
+
+    list_of_data = []
+
+    for label, value in data:
+        list_of_data.append({'name': label, 'y': value})
+
+    return render_template('textblob.html', title=title, description_text=desc, chart_name='Pie', data=list_of_data)
 
 
 @app.route('/vader', methods=['GET'])
