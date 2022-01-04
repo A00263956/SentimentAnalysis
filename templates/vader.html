@@ -1,5 +1,46 @@
 {% extends 'partials/layout.html' %}
 
 {% block content %}
-    <h1>Dynamic Vader Analysis</h1>
+    <h1>Static Vader Analysis</h1>
+    <br>
+    <p>This is where we display a visualisation of tweets on a topic using vader.</p>
+    <div id="chartContainer"></div>
+    <script>
+        $(document).ready(function() {
+            Highcharts.chart('chartContainer', {
+                chart: {
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false,
+                    type: 'pie'
+                },
+                title: {
+                    text: '{{ description_text }}'
+                },
+                tooltip: {
+                    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                },
+                accessibility: {
+                    point: {
+                        valueSuffix: '%'
+                    }
+                },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: {
+                            enabled: true,
+                            format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                        }
+                    }
+                },
+                series: [{
+                    name: '{{ chart_name }}',
+                    colorByPoint: true,
+                    data: {{ data_list | safe }}
+                }]
+            })
+        });
+    </script>
 {% endblock %}

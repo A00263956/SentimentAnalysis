@@ -1,26 +1,37 @@
+from twitter_auth import *
+import tweepy as tp
+import re
+from common_functions import clean_tweet
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import pandas as pd
-from matplotlib import pyplot as plt
 
-def get_polarity(tweets):
-    return (tweets['sentiment']> .25).sum(), (tweets['sentiment']< -.25).sum(), (tweets['sentiment'].between(-.25, .25)).sum()
+def get_vader_tweets(query):
+    auth = tp.OAuthHandler(API_KEY,API_SECRET)
+    auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
 
-def display_graph(p, n , neu):
-    labels = ['postitive', 'negative', 'neutral']
-    values = [p,n,neu]
+    api = tp.API(auth)
 
-    plt.title('Sentiment Analysis')
+    tweets = {}
 
-    plt.pie(values, labels=labels, autopct='%1.1f%%')
+    vdr = SentimentIntensityAnalyzer()
 
-    plt.show()
+    tweets_from_api = api.search_tweets(q=query)
 
+    id = 0
 
-if __name__ == '__main__':
-    df = pd.read_csv('output.csv')
+    for tweet in tweets_from_api:
+        tweets[id] = {
+            'id':id,
+            'username':tweet.user.name,
+            'text': clean_tweet(tweet.text),
+            'sentiment': vdr.polarity_scores(tweet.text)['compound']
+        }
+        id+=1
+
+    df = pd.DataFrame.from_dict(tweets, orient='index')
 
     df.set_index('id', inplace=True)
 
-    postitive, negative, neutral = get_polarity(df)
+    df.to_csv('output.csv')
 
-    display_graph(postitive, negative, neutral)
-
+    return df
