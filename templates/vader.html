@@ -7,6 +7,8 @@
     <div id="chartContainer"></div>
     <script>
         $(document).ready(function() {
+            var data_list = {{ data_list|safe }};
+            var drilldown = {{ drilldown|safe }};
             Highcharts.chart('chartContainer', {
                 chart: {
                     plotBackgroundColor: null,
@@ -19,6 +21,17 @@
                 },
                 tooltip: {
                     pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                },
+                xAxis: {
+                    title: {
+                        text: 'Bracketed sentiment breakdown'
+                    },
+                    type: 'category'
+                },
+                yAxis: {
+                    title: {
+                        text: 'Number of Tweets'
+                    }
                 },
                 accessibility: {
                     point: {
@@ -38,8 +51,39 @@
                 series: [{
                     name: '{{ chart_name }}',
                     colorByPoint: true,
-                    data: {{ data_list | safe }}
-                }]
+                    data: [
+                        {
+                            name: data_list[0]['name'],
+                            y: data_list[0]['y'],
+                            drilldown:'positive'
+                        },
+                        {
+                            name: data_list[1]['name'],
+                            y: data_list[1]['y'],
+                            drilldown: 'neutral'
+                        },
+                        {
+                            name: data_list[2]['name'],
+                            y: data_list[2]['y'],
+                            drilldown:'negative'
+                        }
+                    ]
+                }],
+                drilldown: {
+                    series: [{
+                        id: 'positive',
+                        type:'column',
+                        data: drilldown['pos']
+                    }, {
+                        id: 'neutral',
+                        type:'column',
+                        data: drilldown['neu']
+                    }, {
+                        id: 'negative',
+                        type:'column',
+                        data: drilldown['neg']
+                    }]
+                }
             })
         });
     </script>
